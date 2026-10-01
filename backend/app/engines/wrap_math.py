@@ -2,9 +2,12 @@ def paper_area(length: float, width: float, height: float, overlap: float = 1.15
     L, W, H = float(length), float(width), float(height)
     if min(L, W, H) <= 0:
         raise ValueError("box dimensions must be positive")
+    ov = float(overlap)
+    if ov <= 0:
+        raise ValueError("overlap must be positive")
     base = 2 * (L * W + L * H + W * H)
-    need = base * float(overlap)
-    return {"box_surface": round(base, 3), "overlap": float(overlap), "paper_m2": round(need, 3)}
+    need = base * ov
+    return {"box_surface": round(base, 3), "overlap": ov, "paper_m2": round(need, 3)}
 
 
 def ribbon_estimate(length: float, width: float, height: float, wrap_style: str = "cross") -> dict:
