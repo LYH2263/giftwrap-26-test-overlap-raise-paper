@@ -9,7 +9,10 @@ def run_estimate(box_id: int, overlap: float | None, wrap_style: str, save: bool
     if box.get("data_quality") == "dirty":
         raise HTTPException(422, "dirty box")
     ov = float(overlap) if overlap is not None else settings_repo.get_overlap()
-    calc = paper_area(box["length"], box["width"], box["height"], ov)
+    try:
+        calc = paper_area(box["length"], box["width"], box["height"], ov)
+    except ValueError:
+        raise HTTPException(422, "overlap must be positive")
     ribbon = ribbon_estimate(box["length"], box["width"], box["height"], wrap_style)
     payload = {**calc, "ribbon": ribbon, "box_id": box_id}
     run_id = history.insert_run(box_id, ov, payload, note) if save else None
